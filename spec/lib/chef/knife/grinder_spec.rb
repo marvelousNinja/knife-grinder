@@ -15,5 +15,12 @@ describe Chef::Knife::Grinder do
     it 'should fail if there are any parameters' do
       expect { subject.run(Object.new) }.to raise_error(ArgumentError)
     end
+
+    it 'should act like a "knife client list"' do
+      Chef::Knife.should_receive(:run).
+        with(['client', 'list']).
+        and_return(nil)
+      subject.run
+    end
   end
 end
