@@ -3,7 +3,7 @@ require 'chef/resource'
 class Chef
   class Resource
     class Machine < Chef::Resource
-      def initialize(run_context = nil)
+      def initialize(name, run_context = nil)
         super # not sure how to test it
         @resource_name = :machine
         @provider = Chef::Provider::Machine

@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe Chef::Resource::Machine do
+  let(:params) { 'some_string' }
+  subject { described_class.new(params) }
+
   context 'ancestry' do
     it 'should include Chef::Resource base class' do
       described_class.should < Chef::Resource
