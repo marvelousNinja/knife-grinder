@@ -10,7 +10,7 @@ class Chef
       end
 
       def action_create
-
+        puts 'some crazy code here'
       end
     end
   end

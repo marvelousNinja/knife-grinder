@@ -46,5 +46,10 @@ describe Chef::Provider::Machine do
     it 'does not take any parameters' do
       expect { subject.action_create(Object.new) }.to raise_error(ArgumentError)
     end
+
+    it 'should print a message' do
+      subject.should_receive(:puts).with('some crazy code here')
+      subject.action_create
+    end
   end
 end
