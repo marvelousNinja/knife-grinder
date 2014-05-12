@@ -2,12 +2,8 @@ require 'spec_helper'
 
 describe Chef::Resource::Machine do
   context 'ancestry' do
-    it 'should include Knife base class' do
+    it 'should include Chef::Resource base class' do
       described_class.should < Chef::Resource
-    end
-
-    it 'should call #super during initialization' do
-      subject
     end
   end
 
