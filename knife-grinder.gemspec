@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "chef"
 
+  spec.add_development_dependency "chefspec"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "guard-rspec"
   spec.add_development_dependency "pry-nav"
