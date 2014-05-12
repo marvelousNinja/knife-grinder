@@ -6,9 +6,15 @@ class Chef
       def initialize(run_context = nil)
         super # not sure how to test it
         @resource_name = :machine
-        @provider = nil
+        @provider = Chef::Provider::Machine
         @action = :create
         @allowed_actions = [:create]
+
+        @free = true # i.e. micro instance :)
+      end
+
+      def free(arg = nil)
+        set_or_return(:free, arg, :kind_of => [TrueClass, FalseClass])
       end
     end
   end
