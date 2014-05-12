@@ -1,6 +1,3 @@
-require 'pry'
-require 'chef/knife'
-
 class Chef
   class Knife
     class Grinder < Knife

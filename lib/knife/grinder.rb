@@ -1,6 +1,7 @@
 require 'knife/grinder/version'
 
-module Knife
-  module Grinder
-  end
-end
+require 'chef/knife'
+
+require 'chef/knife/grinder'
+require 'chef/provider/machine'
+require 'chef/resource/machine'

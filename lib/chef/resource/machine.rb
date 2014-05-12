@@ -1,5 +1,3 @@
-require 'chef/resource'
-
 class Chef
   class Resource
     class Machine < Chef::Resource
