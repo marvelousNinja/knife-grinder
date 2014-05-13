@@ -1,15 +1,13 @@
-require 'chef/application/solo'
+require 'knife/grinder'
 
 class Chef
   class Knife
     class Grinder < Knife
       def run
+        recipe = ARGV.last
         ARGV.clear
-        ARGV << ["-c", "/home/alex/work/diploma/chef-repo/solo.rb", "--override-runlist", "recipe[sample]"]
-        Chef::Application::Solo.new.run
-        # Chef::Config[:config_file] = '/home/alex/work/diploma/chef-repo/solo.rb'
-        # #Chef::Config[:cookbook_path] = '/home/alex/work/diploma/chef-repo/cookbooks'
-        # Chef::Config[:override_runlist] = [Chef::RunList::RunListItem.new('recipe[sample]')]
+        ARGV << recipe
+        Chef::Application::Apply.new.run
       end
     end
   end
