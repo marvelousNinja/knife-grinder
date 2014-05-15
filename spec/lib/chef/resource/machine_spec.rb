@@ -71,8 +71,7 @@ describe Chef::Resource::Machine do
         :required => true,
         :kind_of => String,
         :equal_to => subject.machine_types,
-        :default => subject.machine_types.first
-      })
+        :default => subject.machine_types.first })
       subject.type
     end
   end
@@ -85,8 +84,7 @@ describe Chef::Resource::Machine do
     it 'should be a non-required string parameter' do
       subject.should_receive(:set_or_return).with(:image, nil, {
         :required => false,
-        :kind_of => String
-      })
+        :kind_of => String })
       subject.image
     end
   end

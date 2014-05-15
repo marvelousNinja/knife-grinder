@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Chef::Provider::Machine do
   let(:resource) do
     double(:name  => 'some_resource',
-         :type  => 't1.micro',
-         :image => 'ubuntu14.04')
+           :type  => 't1.micro',
+           :image => 'ubuntu14.04')
   end
   
   subject do
