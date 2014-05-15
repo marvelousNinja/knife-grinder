@@ -16,10 +16,8 @@ describe Chef::Knife::Grinder do
       expect { subject.run(Object.new) }.to raise_error(ArgumentError)
     end
 
-    it 'should act like a "knife client list"' do
-      Chef::Knife.should_receive(:run).
-        with(['client', 'list']).
-        and_return(nil)
+    it 'should use Chef::Apply' do
+      Chef::Application::Apply.any_instance.should_receive(:run)
       subject.run
     end
   end
