@@ -3,7 +3,8 @@ class Chef
     class Machine < Chef::Provider
       def load_current_resource
         @current_resource ||= Chef::Resource::Machine.new(new_resource.name)
-        @current_resource.free(new_resource.free)
+        @current_resource.type(new_resource.type)
+        @current_resource.image(new_resource.image)
         @current_resource
       end
 

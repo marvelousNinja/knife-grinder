@@ -1,16 +1,23 @@
 require 'spec_helper'
 
 describe Chef::Provider::Machine do
-  let(:resource) { stub(:name => 'some_resource', :free => true) }
-  subject { described_class.new(resource, nil) }
+  let(:resource) do
+    double(:name  => 'some_resource',
+         :type  => 't1.micro',
+         :image => 'ubuntu14.04')
+  end
+  
+  subject do
+    described_class.new(resource, nil)
+  end
 
-  context 'ancestry' do
-    it 'should include Chef::Provider base class' do
-      described_class.should < Chef::Provider
+  describe '#class' do
+    it 'should derive from Chef::Provider' do
+      subject.class.should < Chef::Provider
     end
   end
 
-  context '#load_current_resource' do
+  describe '#load_current_resource' do
     before(:each) do
       Chef::Resource::Machine.stub(:new).and_return(new_resource)
     end
@@ -18,10 +25,12 @@ describe Chef::Provider::Machine do
     let(:current_resource) { resource }
     let(:new_resource) { resource }
 
-    it { should respond_to(:load_current_resource) }
+    it 'should be defined' do
+      subject.should respond_to(:load_current_resource)
+    end
 
     it 'does not take any parameters' do
-      expect { subject.load_current_resource(Object.new) }.to raise_error(ArgumentError)
+      expect { subject.load_current_resource(Object.new) }.to raise_error
     end
 
     it 'should instantiate Chef::Resource::Machine' do
@@ -29,22 +38,33 @@ describe Chef::Provider::Machine do
       subject.load_current_resource
     end
 
-    it 'should call #free with arguments on a current resource' do
-      current_resource.should_receive(:free).with(new_resource.free)
+    it 'should call #type with arguments on a current resource' do
+      current_resource.should_receive(:type).with(new_resource.type)
       subject.load_current_resource
     end
 
-    it 'should call #free on a new resource' do
-      new_resource.should_receive(:free).with(no_args)
+    it 'should call #image with arguments on a current resource' do
+      current_resource.should_receive(:image).with(new_resource.image)
+      subject.load_current_resource
+    end
+
+    it 'should call #type on a new resource' do
+      new_resource.should_receive(:type).with(no_args)
+      subject.load_current_resource
+    end
+
+    it 'should call #image on a new resource' do
+      new_resource.should_receive(:image).with(no_args)
       subject.load_current_resource
     end
   end
 
-  context '#action_create' do
-    it { should respond_to(:action_create) }
-
+  describe '#action_create' do
+    it 'should be defined' do
+      subject.should respond_to(:action_create)
+    end
     it 'does not take any parameters' do
-      expect { subject.action_create(Object.new) }.to raise_error(ArgumentError)
+      expect { subject.action_create(Object.new) }.to raise_error
     end
 
     it 'should print a message' do

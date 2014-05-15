@@ -1,76 +1,93 @@
 require 'spec_helper'
 
-describe Chef::Resource::Machine do
-  let(:params) { 'some_string' }
-  subject { described_class.new(params) }
+describe Chef::Resource::Machine do 
+  subject do
+    described_class.new('some string') 
+  end
 
-  context 'ancestry' do
-    it 'should include Chef::Resource base class' do
-      described_class.should < Chef::Resource
+  describe '#class' do
+    it 'should derive from Chef::Resource' do
+      subject.class < Chef::Resource
     end
   end
 
-  context '#resource_name' do
-    it { should respond_to(:resource_name) }
-    its(:resource_name) { should eq :machine }
-  end
-
-  context '#action' do
-    it { should respond_to(:action) }
-    its(:action) { should eq :create }
-  end
-
-  context '#allowed_actions' do
-    it { should respond_to(:allowed_actions) }
-    its(:allowed_actions) { should eq [:create] }
-  end
-
-  context '#provider' do
-    it { should respond_to(:provider) }
-    its(:provider) { should eq Chef::Provider::Machine }
-  end
-
-  context '#free' do
-    it { should respond_to(:free) }
-    its(:free) { should eq true }
-
-    context 'with correct args' do
-      let(:args) { [true, false, nil] }
-
-      it 'should not fail' do
-        expect {
-          args.each { |arg| subject.free(arg) }
-        }.not_to raise_error(Chef::Exceptions::ValidationFailed)
-      end
-
-      it 'should set value correctly' do
-        stored_value = subject.free(true)
-        stored_value.should eq true
-      end
-
-      it 'should return stored value if nil passed' do
-        stored_value = subject.free(true)
-        stored_value.should eq subject.free(nil)
-      end
-
-      it 'should act like getter with no parameters' do
-        stored_value = subject.free(true)
-        stored_value.should eq subject.free
-      end
+  describe '#machine_types' do
+    it 'should be defined' do
+      subject.should respond_to(:machine_types)
     end
 
-    context 'with incorrect args' do
-      context 'like random string' do
-        it 'should fail with Chef::Exceptions::ValidationFailed' do
-          expect { subject.free('random_string') }.to raise_error(Chef::Exceptions::ValidationFailed)
-        end
-      end
+    it 'should be equal to ["t1.micro"]' do
+      subject.machine_types.should eq ['t1.micro']
+    end
+  end
 
-      context 'like 42' do
-        it 'should fail with Chef::Exceptions::ValidationFailed' do
-          expect { subject.free(42) }.to raise_error(Chef::Exceptions::ValidationFailed)
-        end
-      end
+  describe '#resource_name' do
+    it 'should be defined' do
+      subject.should respond_to(:resource_name)
+    end
+
+    it 'should default to :machine' do
+      subject.resource_name.should eq :machine
+    end
+  end
+
+  describe '#action' do
+    it 'should be defined' do
+      subject.should respond_to(:action)
+    end
+    
+    it 'should default to :create' do
+      subject.action.should eq :create
+    end
+  end
+  
+  describe '#allowed_actions' do
+    it 'should be defined' do
+      subject.should respond_to(:allowed_actions)
+    end
+
+    it 'should default to [:create]' do
+      subject.allowed_actions.should eq [:create]
+    end
+  end
+
+  describe '#provider' do
+    it 'should be defined' do
+      subject.should respond_to(:provider)
+    end
+
+    it 'should default to Chef::Provider::Machine' do
+      subject.provider.should eq Chef::Provider::Machine
+    end
+  end
+
+  describe '#type' do
+    it 'should be defined' do
+      subject.should respond_to(:type)
+    end
+
+    it 'should be a required string parameter, included in #machine_types' do
+      subject.should_receive(:set_or_return).with(:type, nil, {
+        :required => true,
+        :kind_of => String,
+        :equal_to => subject.machine_types,
+        :default => subject.machine_types.first
+      })
+      subject.type
+    end
+  end
+
+  describe '#image' do
+    it 'should be defined' do
+      subject.should respond_to(:image)
+    end
+
+    it 'should be a non-required string parameter' do
+      subject.should_receive(:set_or_return).with(:image, nil, {
+        :required => false,
+        :kind_of => String
+      })
+      subject.image
     end
   end
 end
