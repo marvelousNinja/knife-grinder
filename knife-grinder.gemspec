@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "chef"
+  spec.add_dependency "knife-ec2"
 
   spec.add_development_dependency "chefspec"
   spec.add_development_dependency "rspec"
