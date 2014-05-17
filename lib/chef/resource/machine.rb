@@ -7,6 +7,10 @@ class Chef
         @provider = Chef::Provider::Machine
         @action = :create
         @allowed_actions = [:create]
+
+        @node_name = name
+        @image = nil
+        @type = nil
       end
 
       def type(arg = nil)
@@ -18,15 +22,23 @@ class Chef
         })
       end
 
-      def image(arg=nil)
+      def image(arg = nil)
         set_or_return(:image, arg, {
-          :required => false,
+          :required => true,
           :kind_of => String
         })
       end
 
       def machine_types
         ['t1.micro']
+      end
+
+      def node_name(arg = nil)
+        set_or_return(:node_name, arg, {
+          :required => true,
+          :kind_of => String,
+          :name_attribute => true
+        })
       end
 
       def exists?

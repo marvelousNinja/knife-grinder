@@ -83,9 +83,23 @@ describe Chef::Resource::Machine do
 
     it 'should be a non-required string parameter' do
       subject.should_receive(:set_or_return).with(:image, nil, {
-        :required => false,
+        :required => true,
         :kind_of => String })
       subject.image
+    end
+  end
+
+  describe '#node_name' do
+    it 'should be defined' do
+      subject.should respond_to(:node_name)
+    end
+
+    it 'should be a required string parameter and an identity attribute' do
+      subject.should_receive(:set_or_return).with(:node_name, nil, {
+        :required => true,
+        :kind_of => String,
+        :name_attribute => true })
+      subject.node_name
     end
   end
 
