@@ -60,16 +60,23 @@ describe Chef::Provider::Machine do
   end
 
   describe '#action_create' do
+    before(:each) do
+      subject.stub(:new_resource) { resource }
+      subject.load_current_resource
+    end
+    
     it 'should be defined' do
       subject.should respond_to(:action_create)
     end
+
     it 'does not take any parameters' do
       expect { subject.action_create(Object.new) }.to raise_error
     end
 
-    it 'should print a message' do
-      subject.should_receive(:puts).with('some crazy code here')
+    it 'should create a server on ec2' do
+      Chef::Knife::Ec2ServerCreate.any_instance.should_receive(:run)
       subject.action_create
     end
   end
+
 end

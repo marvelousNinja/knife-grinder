@@ -9,7 +9,9 @@ class Chef
       end
 
       def action_create
-        puts 'some crazy code here'
+        Chef::Config[:knife][:image] = @current_resource.image
+        Chef::Config[:knife][:flavor] = @current_resource.type
+        Chef::Knife::Ec2ServerCreate.new.run        
       end
     end
   end
