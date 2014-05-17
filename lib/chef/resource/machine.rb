@@ -28,6 +28,10 @@ class Chef
       def machine_types
         ['t1.micro']
       end
+
+      def exists?
+        false
+      end
     end
   end
 end

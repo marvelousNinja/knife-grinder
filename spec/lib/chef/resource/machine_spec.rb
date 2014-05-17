@@ -88,4 +88,14 @@ describe Chef::Resource::Machine do
       subject.image
     end
   end
+
+  describe '#exists?' do
+    it 'should be defined' do
+      subject.should respond_to(:exists?)
+    end
+
+    it 'should return false' do
+      subject.exists?.should eq false
+    end
+  end
 end
