@@ -6,7 +6,7 @@ class Chef
         @resource_name = :machine
         @provider = Chef::Provider::Machine
         @action = :create
-        @allowed_actions = [:create]
+        @allowed_actions = [:create, :delete]
 
         @node_name = name
         @image = nil

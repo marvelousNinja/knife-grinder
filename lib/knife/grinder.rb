@@ -8,4 +8,8 @@ require 'chef/provider/machine'
 require 'chef/resource/machine'
 
 require 'fog'
+require 'readline'
+require 'chef/json_compat'
+require 'chef/knife/bootstrap'
+
 require 'chef/knife/ec2_server_create'
