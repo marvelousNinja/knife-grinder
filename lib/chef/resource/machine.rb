@@ -7,42 +7,28 @@ class Chef
         @provider = Chef::Provider::Machine
         @action = :create
         @allowed_actions = [:create, :delete]
-
-        @node_name = name
-        @image = nil
-        @type = nil
       end
 
-      def type(arg = nil)
-        set_or_return(:type, arg, {
-          :required => true,
-          :kind_of => String, 
-          :equal_to => machine_types,
-          :default => machine_types.first
-        })
-      end
-
-      def image(arg = nil)
-        set_or_return(:image, arg, {
+      def chef_node_name(arg = nil)
+        set_or_return(:chef_node_name, arg, {
+          :name_attribute => true,
           :required => true,
           :kind_of => String
         })
       end
 
-      def machine_types
-        ['t1.micro']
-      end
-
-      def node_name(arg = nil)
-        set_or_return(:node_name, arg, {
-          :required => true,
-          :kind_of => String,
-          :name_attribute => true
-        })
-      end
-
-      def exists?
-        false
+      private
+      def method_missing(name, *args, &block)
+        if args.count == 1
+          eigenclass = class << self; self; end
+          eigenclass.class_eval do
+            define_method(name) do |arg = nil|
+              set_or_return(name, arg, {})
+            end
+          end
+          return send(name, *args, &block)
+        end
+        super
       end
     end
   end
