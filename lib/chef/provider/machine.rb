@@ -16,17 +16,22 @@ class Chef
       private
 
       def run_command(klass)
-        prepare_config(klass)
         klass.load_deps
+        prepare_config(klass)
         command = klass.new
         command.configure_chef
         command.run
       end
 
       def prepare_config(klass)
-        klass.options.each_key do |key|
+        klass.options.each do |key, preferences|
           if @current_resource.respond_to?(key)
-            Chef::Config[:knife][key] = @current_resource.send(key)
+            value = @current_resource.send(key)
+            if preferences[:proc]
+              preferences[:proc].call(value)
+            else
+              Chef::Config[:knife][key] = value
+            end
           end
         end
       end
