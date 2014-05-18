@@ -36,7 +36,7 @@ describe Chef::Resource::Machine do
       subject.should respond_to(:allowed_actions)
     end
 
-    it 'should default to [:create]' do
+    it 'should constist of :create and :delete' do
       subject.allowed_actions.should eq [:create, :delete]
     end
   end
@@ -56,9 +56,8 @@ describe Chef::Resource::Machine do
       subject.should respond_to(:chef_node_name)
     end
 
-    it 'should be a required string and an identity attribute' do
+    it 'should be a string identity attribute' do
       subject.should_receive(:set_or_return).with(:chef_node_name, nil, {
-        :required => true,
         :kind_of => String,
         :name_attribute => true })
       subject.chef_node_name

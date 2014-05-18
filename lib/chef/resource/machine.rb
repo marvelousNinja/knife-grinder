@@ -1,6 +1,6 @@
 class Chef
   class Resource
-    class Machine < Chef::Resource
+    class Machine < Chef::Resource      
       def initialize(name, run_context = nil)
         super
         @resource_name = :machine
@@ -11,7 +11,6 @@ class Chef
 
       def chef_node_name(arg = nil)
         set_or_return(:chef_node_name, arg, {
-          :required => true,
           :kind_of => String,
           :name_attribute => true
         })
