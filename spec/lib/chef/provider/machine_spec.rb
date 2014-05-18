@@ -56,7 +56,7 @@ describe Chef::Provider::Machine do
       end
 
       it 'should not call command' do
-        subject.should_not_receive(:run_command).with(Chef::Knife::Ec2ServerCreate)
+        subject.should_not_receive(:run)
       end
     end
 
@@ -72,7 +72,7 @@ describe Chef::Provider::Machine do
 
       it 'should rely on appropriate command' do
         subject.stub(:converge_by).and_yield
-        subject.should_receive(:run_command).with(Chef::Knife::Ec2ServerCreate)
+        subject.should_receive(:run)
         subject.action_create
       end
     end
@@ -100,7 +100,7 @@ describe Chef::Provider::Machine do
       end
 
       it 'should not call command' do
-        subject.should_not_receive(:run_command).with(Chef::Knife::Ec2ServerDelete)
+        subject.should_not_receive(:run)
       end
     end
 
@@ -116,7 +116,7 @@ describe Chef::Provider::Machine do
 
       it 'should rely on appropriate command' do
         subject.stub(:converge_by).and_yield
-        subject.should_receive(:run_command).with(Chef::Knife::Ec2ServerDelete)
+        subject.should_receive(:run)
         subject.action_delete
       end
     end
