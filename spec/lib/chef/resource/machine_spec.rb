@@ -58,9 +58,24 @@ describe Chef::Resource::Machine do
 
     it 'should be a string identity attribute' do
       subject.should_receive(:set_or_return).with(:chef_node_name, nil, {
+        :required => true,
         :kind_of => String,
         :name_attribute => true })
       subject.chef_node_name
+    end
+  end
+
+  describe '#infrastructure' do
+    it 'should be defined' do
+      subject.should respond_to(:infrastructure)
+    end
+
+    it 'should be a required string parameter' do
+      subject.should_receive(:set_or_return).with(:infrastructure, nil, {
+        :required => true,
+        :kind_of => String
+      })
+      subject.infrastructure
     end
   end
 

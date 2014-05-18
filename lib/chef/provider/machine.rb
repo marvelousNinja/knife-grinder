@@ -1,3 +1,5 @@
+require 'pry'
+
 class Chef
   class Provider
     class Machine < Chef::Provider
@@ -14,7 +16,7 @@ class Chef
           Chef::Log.info "#{current_resource} already exists."
         else
           converge_by("Creating #{current_resource}") do
-            run_command(Chef::Knife::Ec2ServerCreate)
+            run
           end
         end
       end
@@ -22,7 +24,7 @@ class Chef
       def action_delete
         if machine_exists?
           converge_by "Deleting #{current_resource}" do
-            run_command(Chef::Knife::Ec2ServerDelete)
+            run
           end
         else
           Chef::Log.info "#{current_resource} does not exist."
@@ -43,12 +45,20 @@ class Chef
         Chef::Search::Query.new
       end
 
-      def run_command(klass)
+      def run
+        klass = derive_command_class
         klass.load_deps
         prepare_config(klass)
         command = klass.new
         command.configure_chef
         command.run
+      end
+
+      def derive_command_class
+        action = current_resource.action.first
+        infrastructure = current_resource.infrastructure
+        require "chef/knife/#{infrastructure}_server_#{action}"
+        Kernel.const_get "Chef::Knife::#{infrastructure.capitalize}Server#{action.capitalize}"
       end
 
       def prepare_config(klass)
