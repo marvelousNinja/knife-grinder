@@ -2,7 +2,7 @@ class Chef
   class Provider
     class Machine < Chef::Provider
       def load_current_resource
-        new_resource
+        @current_resource = new_resource
       end
 
       def whyrun_supported?
@@ -32,7 +32,15 @@ class Chef
       private
 
       def machine_exists?
-        true
+        node = query.search(:node, "name:#{current_resource.name}").first
+        if node.empty? && current_resource.retries > 0
+          raise Chef::Exceptions::SearchIndex("Node not found: #{current_resource.name}")
+        end
+        !node.empty?
+      end
+
+      def query
+        Chef::Search::Query.new
       end
 
       def run_command(klass)

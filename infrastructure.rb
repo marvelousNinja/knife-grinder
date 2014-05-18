@@ -12,5 +12,7 @@ machine 'my_very_first_node' do
   ssh_user 'ubuntu'
   ssh_key_name 'infrastructure_key'
   purge true
+  retries 2
+  retry_delay 5
   action :delete
 end
