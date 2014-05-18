@@ -11,16 +11,6 @@ describe Chef::Resource::Machine do
     end
   end
 
-  describe '#machine_types' do
-    it 'should be defined' do
-      subject.should respond_to(:machine_types)
-    end
-
-    it 'should be equal to ["t1.micro"]' do
-      subject.machine_types.should eq ['t1.micro']
-    end
-  end
-
   describe '#resource_name' do
     it 'should be defined' do
       subject.should respond_to(:resource_name)
@@ -47,7 +37,7 @@ describe Chef::Resource::Machine do
     end
 
     it 'should default to [:create]' do
-      subject.allowed_actions.should eq [:create]
+      subject.allowed_actions.should eq [:create, :delete]
     end
   end
 
@@ -61,55 +51,51 @@ describe Chef::Resource::Machine do
     end
   end
 
-  describe '#type' do
+  describe '#chef_node_name' do
     it 'should be defined' do
-      subject.should respond_to(:type)
+      subject.should respond_to(:chef_node_name)
     end
 
-    it 'should be a required string parameter, included in #machine_types' do
-      subject.should_receive(:set_or_return).with(:type, nil, {
-        :required => true,
-        :kind_of => String,
-        :equal_to => subject.machine_types,
-        :default => subject.machine_types.first })
-      subject.type
-    end
-  end
-
-  describe '#image' do
-    it 'should be defined' do
-      subject.should respond_to(:image)
-    end
-
-    it 'should be a non-required string parameter' do
-      subject.should_receive(:set_or_return).with(:image, nil, {
-        :required => true,
-        :kind_of => String })
-      subject.image
-    end
-  end
-
-  describe '#node_name' do
-    it 'should be defined' do
-      subject.should respond_to(:node_name)
-    end
-
-    it 'should be a required string parameter and an identity attribute' do
-      subject.should_receive(:set_or_return).with(:node_name, nil, {
+    it 'should be a required string and an identity attribute' do
+      subject.should_receive(:set_or_return).with(:chef_node_name, nil, {
         :required => true,
         :kind_of => String,
         :name_attribute => true })
-      subject.node_name
+      subject.chef_node_name
     end
   end
 
-  describe '#exists?' do
-    it 'should be defined' do
-      subject.should respond_to(:exists?)
+  describe 'dynamic attribute' do
+    before(:each) do
+      subject.sample_attribute('sample_value')
     end
 
-    it 'should return false' do
-      subject.exists?.should eq false
+    it 'becomes defined after some value has been passed' do
+      subject.should respond_to(:sample_attribute)
     end
-  end
+
+    it 'relies on built-in attributes support' do
+      subject.should_receive(:set_or_return).with(:sample_attribute, nil, {})
+      subject.sample_attribute
+    end
+
+    it 'returns stored value if no args have been passed' do
+      subject.sample_attribute('new_value')
+      subject.sample_attribute.should eq 'new_value'
+    end
+
+    context 'if value hasnt been set before' do
+      it 'cant load it' do
+        expect {
+          subject.non_existing_attribute
+        }.to raise_error
+      end
+
+      it 'cant set it if there is there is more than one parameter' do
+        expect {
+          subject.non_existing_attribute('first', 'second')
+        }.to raise_error
+      end
+    end
+  end    
 end

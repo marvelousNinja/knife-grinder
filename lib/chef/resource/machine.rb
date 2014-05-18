@@ -11,9 +11,9 @@ class Chef
 
       def chef_node_name(arg = nil)
         set_or_return(:chef_node_name, arg, {
-          :name_attribute => true,
           :required => true,
-          :kind_of => String
+          :kind_of => String,
+          :name_attribute => true
         })
       end
 
