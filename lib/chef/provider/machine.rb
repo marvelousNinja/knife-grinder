@@ -12,33 +12,22 @@ class Chef
       end
 
       def action_create
-        if machine_exists?
-          Chef::Log.info "#{current_resource} already exists."
-        else
-          converge_by("Creating #{current_resource}") do
-            run
-          end
-        end
+        converge_by("Creating #{current_resource}") { run } unless machine_exists?
       end
 
       def action_delete
-        if machine_exists?
-          converge_by "Deleting #{current_resource}" do
-            run
-          end
-        else
-          Chef::Log.info "#{current_resource} does not exist."
-        end
+        raise Chef::Exceptions::ResourceNotFound unless machine_exists? || current_resource.retries == 0 
+        converge_by("Deleting #{current_resource}") { run }
       end
 
       private
 
       def machine_exists?
-        node = query.search(:node, "name:#{current_resource.name}").first
-        if node.empty? && current_resource.retries > 0
-          raise Chef::Exceptions::SearchIndex("Node not found: #{current_resource.name}")
-        end
-        !node.empty?
+        find_machine(current_resource.name).first
+      end
+
+      def find_machine(name)
+        query.search(:node, "name:#{name}").first
       end
 
       def query
@@ -55,7 +44,7 @@ class Chef
       end
 
       def derive_command_class
-        action = current_resource.action.first
+        action = self.action
         infrastructure = current_resource.infrastructure
         require "chef/knife/#{infrastructure}_server_#{action}"
         Kernel.const_get "Chef::Knife::#{infrastructure.capitalize}Server#{action.capitalize}"
